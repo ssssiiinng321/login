@@ -6,6 +6,10 @@
     },
     "rewrites": [
         {
+            "source": "/style.css",
+            "destination": "/style.css"
+        },
+        {
             "source": "/",
             "destination": "/api/index.php"
         },
