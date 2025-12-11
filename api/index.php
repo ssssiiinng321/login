@@ -1,5 +1,5 @@
 <?php
-session_start();
+require 'session.php';
 if (isset($_SESSION['user_id'])) {
     // header("Location: dashboard.php"); // Redirect if already logged in (optional implementation)
 }
