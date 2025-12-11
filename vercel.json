@@ -10,7 +10,19 @@
             "destination": "/api/index.php"
         },
         {
-            "source": "/(.*\\.php)",
+            "source": "/style.css",
+            "destination": "/style.css"
+        },
+        {
+            "source": "/init/api/cloud",
+            "destination": "/api/init_cloud.php"
+        },
+        {
+            "source": "/(init_cloud.php)",
+            "destination": "/api/$1"
+        },
+        {
+            "source": "/(.*)",
             "destination": "/api/$1"
         }
     ]
