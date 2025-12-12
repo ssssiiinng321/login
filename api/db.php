@@ -17,7 +17,15 @@ $options = [
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (\PDOException $e) {
-    // In production, you might want to log this instead of showing it
-    throw new \PDOException($e->getMessage(), (int)$e->getCode());
+    // If connection fails, we can't really do anything for the main app, but we should handle it gracefully
+    // potentially logging it or showing a maintenance page.
+    // For now, let's silence the fatal error to see if we can render a friendly error.
+    error_log("DB Connection failed: " . $e->getMessage());
+    $pdo = null;
+    
+    // If this is a direct page load, show error. If it's an include, maybe we can survive.
+    if (basename($_SERVER['PHP_SELF']) != 'session.php') {
+         die("Database connection failed. Please try again later.");
+    }
 }
 ?>

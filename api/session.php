@@ -55,8 +55,14 @@ class PdoSessionHandler implements SessionHandlerInterface
 }
 
 // Initialize the session handler
-$handler = new PdoSessionHandler($pdo);
-session_set_save_handler($handler, true);
+if ($pdo) {
+    $handler = new PdoSessionHandler($pdo);
+    session_set_save_handler($handler, true);
+} else {
+    // Fallback: This usually won't work well on Vercel for login, but prevents crash
+    // if DB is down.
+    ini_set('session.save_path', '/tmp'); 
+}
 
 // Cookie settings for Vercel/Cross-site security
 session_set_cookie_params([
