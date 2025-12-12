@@ -56,7 +56,7 @@ $is_logged_in = isset($_SESSION['user_id']);
                     You have successfully logged into the system. This is your personal dashboard.
                 </p>
                 <div style="display: flex; gap: 1rem; justify-content: center;">
-                    <button class="btn-submit" style="width: auto; padding: 0.8rem 2rem;">Explore Features</button>
+                    <a href="chatbot.php" class="btn-submit" style="width: auto; padding: 0.8rem 2rem; text-decoration: none;"><i class="fas fa-robot"></i> Chat with AI</a>
                     <button class="btn-purchase" style="background: rgba(255,255,255,0.1);">Settings</button>
                 </div>
             <?php else: ?>
