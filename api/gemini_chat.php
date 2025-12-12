@@ -27,7 +27,7 @@ $apiKey = getenv('GEMINI_API_KEY');
 if (!$apiKey && file_exists('secrets.php')) {
     include 'secrets.php';
 }
-$apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' . $apiKey;
+$apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=' . $apiKey;
 
 // Prepare payload for Gemini
 $payload = [
@@ -48,6 +48,8 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Content-Type: application/json'
 ]);
+// XAMPP often has SSL issues, disabling verification for local testing
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
 // Execute request
 $response = curl_exec($ch);
@@ -59,6 +61,13 @@ curl_close($ch);
 if ($curlError) {
     http_response_code(500);
     echo json_encode(['error' => 'Connection error: ' . $curlError]);
+    exit;
+}
+
+if ($httpCode !== 200) {
+    http_response_code($httpCode);
+    $errorDetails = json_decode($response, true)['error']['message'] ?? $response;
+    echo json_encode(['error' => 'API Error (' . $httpCode . '): ' . $errorDetails]);
     exit;
 }
 
