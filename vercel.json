@@ -10,12 +10,12 @@
             "destination": "/style.css"
         },
         {
-            "source": "/",
-            "destination": "/api/index.php"
+            "source": "/(.*\\.php)",
+            "destination": "/api/$1"
         },
         {
-            "source": "/(.*)",
-            "destination": "/api/$1"
+            "source": "/",
+            "destination": "/api/index.php"
         }
     ]
 }

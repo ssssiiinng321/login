@@ -466,15 +466,27 @@ if (!$is_logged_in) {
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
         
-        await fetch('products.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        
-        closeProductModal();
-        e.target.reset();
-        loadProducts();
+        try {
+            const res = await fetch('products.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            const result = await res.json();
+            
+            if (!res.ok) {
+                throw new Error(result.error || 'Failed to create product');
+            }
+            
+            alert('Product created successfully!');
+            closeProductModal();
+            e.target.reset();
+            loadProducts();
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error adding product: ' + error.message);
+        }
     }
 
     async function deleteProduct(id) {
