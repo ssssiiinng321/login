@@ -165,6 +165,47 @@ $username = $_SESSION['username'] ?? 'Cashier';
         }
 
         /* Modal Responsive */
+        .modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        .modal.active {
+            display: flex;
+        }
+
+        /* Payment Options */
+        .payment-options {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+        .pay-option {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 120px;
+        }
+        .pay-option:hover { background: rgba(255,255,255,0.1); }
+        .pay-option.selected {
+            border-color: var(--accent);
+            background: rgba(99, 102, 241, 0.2);
+        }
+        .pay-option i { font-size: 1.5rem; }
         .modal-content {
             background: var(--card-bg);
             padding: 2rem;
