@@ -386,9 +386,17 @@ $username = $_SESSION['username'] ?? 'Cashier';
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            const data = await res.json();
+            
+            const text = await res.text();
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                console.error("Non-JSON response:", text);
+                throw new Error(`Server Error (${res.status}): ` + text.substring(0, 200) + "...");
+            }
 
-            if(data.error) throw new Error(data.error);
+            if(!res.ok || data.error) throw new Error(data.error || 'Order failed');
 
             // Opens receipt in new window
             window.open(`receipt_view.php?id=${data.id}`, '_blank', 'width=400,height=600');

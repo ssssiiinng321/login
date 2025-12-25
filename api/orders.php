@@ -1,4 +1,26 @@
 <?php
+
+// Define API context
+define('IS_API_REQUEST', true);
+
+// Prevent any HTML output
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
+
+// Custom error handling to ensure JSON output even on fatal errors
+function jsonErrorHandler() {
+    $error = error_get_last();
+    if ($error !== NULL && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        if (!headers_sent()) {
+            http_response_code(500);
+            header('Content-Type: application/json');
+        }
+        echo json_encode(['error' => 'Fatal Error: ' . $error['message'] . ' in ' . $error['file'] . ':' . $error['line']]);
+        exit;
+    }
+}
+register_shutdown_function('jsonErrorHandler');
+
 require_once 'db.php';
 
 header('Content-Type: application/json');
