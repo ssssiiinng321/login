@@ -174,6 +174,29 @@ $username = $_SESSION['username'] ?? 'Cashier';
             margin: 1rem;
         }
 
+        .btn-pay {
+            width: 100%;
+            padding: 1rem;
+            background: var(--shape-color-3); /* Green */
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1rem;
+        }
+        .btn-pay:disabled {
+            background: #4b5563;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .btn-pay:hover:not(:disabled) {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+        }
+
     </style>
 </head>
 <body>
