@@ -1,7 +1,25 @@
 <?php
 require_once 'db.php';
 
+
+// Disable error display to avoid HTML in JSON
+ini_set('display_errors', 0);
+// But keep logging on
+ini_set('log_errors', 1);
+
+// Define API context so db.php doesn't die with text
+define('IS_API_REQUEST', true);
+
+require_once 'db.php';
+
 header('Content-Type: application/json');
+
+// Graceful check for DB
+if (!isset($pdo) || !$pdo) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Database connection failed']);
+    exit;
+}
 
 // Helper to get raw input data
 function getJsonInput() {

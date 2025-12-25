@@ -23,8 +23,9 @@ try {
     error_log("DB Connection failed: " . $e->getMessage());
     $pdo = null;
     
-    // If this is a direct page load, show error. If it's an include, maybe we can survive.
-    if (basename($_SERVER['PHP_SELF']) != 'session.php') {
+    // If this is a direct page load, show error.
+    // If it's an API request (defined by products.php), be silent so JSON can be returned.
+    if (!defined('IS_API_REQUEST') && basename($_SERVER['PHP_SELF']) != 'session.php') {
          die("Database connection failed. Please try again later.");
     }
 }

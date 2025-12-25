@@ -473,7 +473,16 @@ if (!$is_logged_in) {
                 body: JSON.stringify(data)
             });
             
-            const result = await res.json();
+            const text = await res.text();
+            let result;
+            try {
+                result = JSON.parse(text);
+            } catch (err) {
+                // If it's not JSON, it's likely a PHP error page (HTML)
+                // We'll show the start of it to help debug
+                console.error("Non-JSON response:", text);
+                throw new Error("Server Error (Not JSON): " + text.substring(0, 200) + "...");
+            }
             
             if (!res.ok) {
                 throw new Error(result.error || 'Failed to create product');
