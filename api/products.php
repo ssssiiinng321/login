@@ -1,4 +1,4 @@
-
+<?php
 // Define API context
 define('IS_API_REQUEST', true);
 
