@@ -479,13 +479,12 @@ if (!$is_logged_in) {
                 result = JSON.parse(text);
             } catch (err) {
                 // If it's not JSON, it's likely a PHP error page (HTML)
-                // We'll show the start of it to help debug
                 console.error("Non-JSON response:", text);
-                throw new Error("Server Error (Not JSON): " + text.substring(0, 200) + "...");
+                throw new Error(`Server Error (${res.status}): ` + text.substring(0, 200) + "...");
             }
             
             if (!res.ok) {
-                throw new Error(result.error || 'Failed to create product');
+                throw new Error(result.error || `Failed to create product (${res.status})`);
             }
             
             alert('Product created successfully!');
