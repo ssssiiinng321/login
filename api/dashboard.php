@@ -767,8 +767,28 @@ if (!$is_logged_in) {
 
     async function deleteProduct(id) {
         if(!confirm('Are you sure you want to delete this product? This cannot be undone.')) return;
-        await fetch(`products.php?id=${id}`, { method: 'DELETE' });
-        loadProducts();
+        
+        try {
+            const res = await fetch(`products.php?id=${id}`, { method: 'DELETE' });
+            // Handle non-JSON or error responses
+            const text = await res.text();
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch(e) {
+                // If Vercel blocks DELETE, it might return HTML (405 or 403)
+                throw new Error(`Server Error (${res.status}): ` + text.substring(0, 100));
+            }
+
+            if(data.error) throw new Error(data.error);
+
+            alert(data.message || 'Product deleted successfully');
+            loadProducts();
+            loadDailySales();
+        } catch (error) {
+            console.error('Delete Error:', error);
+            alert('Failed to delete: ' + error.message);
+        }
     }
 
     async function loadOrders(date = null) {
