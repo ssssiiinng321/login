@@ -856,6 +856,6 @@ if (!$is_logged_in) {
         initLanguage();
     });
 </script>
-<script src="translations.js"></script> <!-- Load Translations -->
+<script src="../translations.js"></script> <!-- Load Translations -->
 </body>
 </html>

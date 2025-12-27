@@ -69,6 +69,6 @@ if (isset($_SESSION['user_id'])) {
         Powered by <span>YourPurpose POS System</span> &bull; Efficient Sales Management
     </div>
 
-    <script src="animation.js"></script>
+    <script src="../animation.js"></script>
 </body>
 </html>

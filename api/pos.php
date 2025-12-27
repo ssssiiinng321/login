@@ -556,7 +556,7 @@ $username = $_SESSION['username'] ?? 'Cashier';
     loadProducts();
     initLanguage();
 </script>
-<script src="translations.js"></script>
-<script src="animation.js"></script>
+<script src="../translations.js"></script>
+<script src="../animation.js"></script>
 </body>
 </html>
