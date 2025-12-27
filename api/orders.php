@@ -54,8 +54,19 @@ switch ($method) {
                 echo json_encode(['error' => 'Order not found']);
             }
         } else {
-            // List all orders
-            $stmt = $pdo->query("SELECT * FROM orders ORDER BY created_at DESC");
+            // List all orders, optionally filtered by date
+            $sql = "SELECT * FROM orders";
+            $params = [];
+
+            if (isset($_GET['date']) && !empty($_GET['date'])) {
+                $sql .= " WHERE DATE(created_at) = ?";
+                $params[] = $_GET['date'];
+            }
+            
+            $sql .= " ORDER BY created_at DESC";
+            
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params);
             echo json_encode($stmt->fetchAll());
         }
         break;

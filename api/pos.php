@@ -13,7 +13,7 @@ $username = $_SESSION['username'] ?? 'Cashier';
     <style>
         body { 
             overflow: hidden; 
-            background: var(--bg-color); 
+            background: transparent; 
         } 
         
         .pos-layout {
@@ -21,26 +21,40 @@ $username = $_SESSION['username'] ?? 'Cashier';
             height: 100vh;
             width: 100vw;
             overflow: hidden;
+            position: relative;
+            z-index: 10;
         }
         
         .product-grid-section {
             flex: 1;
-            padding: 1rem;
+            padding: 2rem;
             display: flex;
             flex-direction: column;
-            border-right: 1px solid rgba(255,255,255,0.1);
-            overflow: hidden; /* Contain scroll */
+            border-right: none;
+            overflow: hidden; 
+            /* Theme Panel Style */
+            background: var(--panel-bg);
+            margin: 2rem; 
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            color: var(--text-primary);
+            transition: background 0.3s, color 0.3s;
         }
 
         .cart-section {
-            width: 350px;
-            min-width: 300px;
-            padding: 1rem;
+            width: 380px; 
+            min-width: 350px;
+            padding: 2rem;
             display: flex;
             flex-direction: column;
-            background: var(--card-bg);
-            border-left: 1px solid rgba(255,255,255,0.1);
-            z-index: 10;
+            background: var(--sidebar-bg); /* Glassy Sidebar */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-left: 1px solid var(--border-color);
+            z-index: 100;
+            color: var(--text-primary);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.2);
+            transition: background 0.3s;
         }
 
         /* Search Bar */
@@ -51,12 +65,19 @@ $username = $_SESSION['username'] ?? 'Cashier';
         }
         .search-bar input {
             width: 100%;
-            padding: 0.75rem 1rem 0.75rem 2.5rem;
-            background: var(--input-bg);
+            padding: 0.8rem 1rem 0.8rem 2.8rem;
+            background: var(--input-bg); 
             border: 1px solid var(--input-border);
             border-radius: 0.5rem;
-            color: white;
+            color: var(--text-primary);
             font-size: 1rem;
+            transition: all 0.2s;
+        }
+        .search-bar input:focus {
+            background: var(--card-bg);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            outline: none;
         }
         .search-bar i {
             position: absolute;
@@ -73,13 +94,13 @@ $username = $_SESSION['username'] ?? 'Cashier';
             gap: 1rem;
             overflow-y: auto;
             padding-bottom: 2rem;
-            flex: 1; /* Take remaining space */
+            flex: 1; 
         }
         .product-card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 0.75rem;
-            padding: 0.75rem;
+            background: var(--card-bg); /* Use card bg variable, might need specific overrides if 'white paper' logic differs */
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1rem;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
@@ -87,20 +108,28 @@ $username = $_SESSION['username'] ?? 'Cashier';
             align-items: center;
             text-align: center;
             height: fit-content;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            color: var(--text-primary);
         }
         .product-card:hover {
-            background: rgba(255,255,255,0.1);
-            transform: translateY(-2px);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
             border-color: var(--accent);
+            background: rgba(255,255,255,0.08); /* Slight highlight on dark */
         }
+        /* Light mode specific hover handling via body.light-mode if needed, or stick to refined vars */
+        
         .product-card img {
             width: 100%;
             aspect-ratio: 1;
             object-fit: cover;
             border-radius: 0.5rem;
-            margin-bottom: 0.5rem;
-            background: #000;
+            margin-bottom: 0.75rem;
+            background: rgba(0,0,0,0.2); /* Dark placeholder */
         }
+        .product-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; line-height: 1.3; }
+        .product-price { color: var(--accent); font-weight: 700; font-size: 1.1rem; }
+        .product-stock { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
         
         /* Mobile Responsive */
         @media (max-width: 768px) {
@@ -149,7 +178,7 @@ $username = $_SESSION['username'] ?? 'Cashier';
             padding: 0.75rem;
             background: rgba(0,0,0,0.2);
             margin-bottom: 0.5rem;
-            border-radius: 0.5rem;
+            border-radius: var(--radius-md);
         }
         /* Scrollbar styling */
         ::-webkit-scrollbar { width: 6px; }
@@ -188,28 +217,33 @@ $username = $_SESSION['username'] ?? 'Cashier';
             margin-top: 1rem;
         }
         .pay-option {
-            background: rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.03);
             border: 2px solid rgba(255,255,255,0.1);
-            padding: 1rem 2rem;
-            border-radius: 0.5rem;
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.5rem;
-            min-width: 120px;
+            gap: 1rem;
+            min-width: 140px;
+            flex: 1;
         }
-        .pay-option:hover { background: rgba(255,255,255,0.1); }
+        .pay-option:hover { 
+            background: rgba(255,255,255,0.08); 
+            transform: translateY(-2px);
+        }
         .pay-option.selected {
-            border-color: var(--accent);
-            background: rgba(99, 102, 241, 0.2);
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
         }
-        .pay-option i { font-size: 1.5rem; }
+        .pay-option i { font-size: 2rem; margin-bottom: 0.5rem; }
         .modal-content {
             background: var(--card-bg);
             padding: 2rem;
-            border-radius: 1rem;
+            border-radius: var(--radius-lg);
             width: 100%; 
             max-width: 500px;
             margin: 1rem;
@@ -218,15 +252,22 @@ $username = $_SESSION['username'] ?? 'Cashier';
         .btn-pay {
             width: 100%;
             padding: 1rem;
-            background: var(--shape-color-3); /* Green */
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
             border: none;
-            border-radius: 0.5rem;
+            border-radius: 50px; /* Pill */
             font-size: 1.2rem;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 1rem;
+            transition: all 0.3s;
+            margin-top: 2rem;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            letter-spacing: 0.5px;
+        }
+        .btn-pay:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
         }
         .btn-pay:disabled {
             background: #4b5563;
@@ -241,19 +282,34 @@ $username = $_SESSION['username'] ?? 'Cashier';
     </style>
 </head>
 <body>
+    <canvas id="canvas1"></canvas>
 
 <div class="pos-layout">
     <!-- Left: Product Grid -->
     <div class="product-grid-section">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom:1rem;">
-            <a href="dashboard.php" style="color: var(--text-secondary); text-decoration:none;"><i class="fas fa-arrow-left"></i> Back</a>
-            <h2 style="margin:0;">POS Terminal</h2>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <a href="dashboard.php" style="color: var(--text-secondary); text-decoration:none;"><i class="fas fa-arrow-left"></i> <span data-i18n="back">Back</span></a>
+                
+                <!-- Theme Toggle -->
+                <button onclick="toggleTheme()" id="themeBtn" style="background:none; border:none; color: var(--text-primary); cursor: pointer; font-size: 1.2rem;">
+                    <i class="fas fa-moon"></i>
+                </button>
+
+                <!-- Lang Switcher -->
+                <select class="lang-select" onchange="updateLanguage(this.value)" style="padding: 0.3rem; border-radius: 5px; background: rgba(255,255,255,0.1); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.2);">
+                    <option value="en">EN</option>
+                    <option value="km">KM</option>
+                    <option value="cn">CN</option>
+                </select>
+            </div>
+            <h2 style="margin:0;" data-i18n="pos_terminal">POS Terminal</h2>
             <div class="text-secondary"><?php echo htmlspecialchars($username); ?></div>
         </div>
         
         <div class="search-bar">
             <i class="fas fa-search"></i>
-            <input type="text" id="search" placeholder="Search products by name or barcode... (Press / to focus)" onkeyup="filterProducts()">
+            <input type="text" id="search" data-i18n="search_products" placeholder="Search products by name or barcode... (Press / to focus)" onkeyup="filterProducts()">
         </div>
 
         <div class="product-grid" id="productGrid">
@@ -264,18 +320,18 @@ $username = $_SESSION['username'] ?? 'Cashier';
     <!-- Right: Cart -->
     <div class="cart-section">
         <div class="cart-header">
-            <h3>Current Order</h3>
-            <button onclick="clearCart()" style="background:none; border:none; color: #ef4444; cursor:pointer;"><i class="fas fa-trash"></i> Clear</button>
+            <h3 data-i18n="current_order">Current Order</h3>
+            <button onclick="clearCart()" style="background:none; border:none; color: #ef4444; cursor:pointer;"><i class="fas fa-trash"></i> <span data-i18n="clear">Clear</span></button>
         </div>
         <div class="cart-items" id="cartItems">
             <!-- Loaded via JS -->
-            <div style="text-align: center; color: var(--text-secondary); margin-top: 2rem;">
+            <div style="text-align: center; color: var(--text-secondary); margin-top: 2rem;" data-i18n="cart_empty">
                 Cart is empty
             </div>
         </div>
         <div class="cart-footer">
             <div class="total-row">
-                <span>Total</span>
+                <span data-i18n="total">Total</span>
                 <span id="cartTotal">$0.00</span>
             </div>
             <button class="btn-pay" onclick="openPaymentModal()" id="btnPay" disabled>Charge $0.00</button>
@@ -286,22 +342,22 @@ $username = $_SESSION['username'] ?? 'Cashier';
 <!-- Payment Modal -->
 <div class="modal" id="paymentModal">
     <div class="modal-content" style="width: 500px; text-align: center;">
-        <h2>Payment Method</h2>
+        <h2 data-i18n="payment_method">Payment Method</h2>
         <div class="payment-options">
             <div class="pay-option selected" onclick="selectPayment('cash', this)">
-                <i class="fas fa-money-bill-wave"></i> Cash
+                <i class="fas fa-money-bill-wave"></i> <span data-i18n="cash">Cash</span>
             </div>
             <div class="pay-option" onclick="selectPayment('card', this)">
-                <i class="fas fa-credit-card"></i> Card
+                <i class="fas fa-credit-card"></i> <span data-i18n="card">Card</span>
             </div>
         </div>
         <div style="margin-top: 2rem; text-align: left;">
-            <label>Customer Name (Optional)</label>
-            <input type="text" id="customerName" class="form-input" placeholder="Walk-in Customer" style="margin-top: 0.5rem;">
+            <label data-i18n="customer_name">Customer Name (Optional)</label>
+            <input type="text" id="customerName" class="form-input" placeholder="Walk-in Customer" style="margin-top: 0.5rem; border-radius: 50px; padding-left: 1.5rem;">
         </div>
         <div class="form-footer" style="margin-top: 2rem; justify-content: space-between;">
-            <button class="btn-purchase" onclick="closePaymentModal()" style="border:1px solid #555;">Cancel</button>
-            <button class="btn-submit" onclick="processPayment()" style="width: auto; padding: 0.75rem 3rem;">Complete Order</button>
+            <button class="btn-purchase" onclick="closePaymentModal()" style="border:1px solid #555;" data-i18n="cancel">Cancel</button>
+            <button class="btn-submit" onclick="processPayment()" style="width: auto; padding: 0.75rem 3rem;" data-i18n="complete_order">Complete Order</button>
         </div>
     </div>
 </div>
@@ -328,10 +384,10 @@ $username = $_SESSION['username'] ?? 'Cashier';
     function renderProducts(list) {
         const grid = document.getElementById('productGrid');
         grid.innerHTML = '';
-        list.forEach(p => {
+        list.forEach((p, index) => {
             if(p.stock <= 0) return; // Don't show out of stock
             grid.innerHTML += `
-                <div class="product-card" onclick="addToCart(${p.id})">
+                <div class="product-card animate-pop" style="animation-delay: ${index * 50}ms" onclick="addToCart(${p.id})">
                     <img src="${p.image_url || 'https://via.placeholder.com/80?text=Product'}" alt="">
                     <div class="product-name">${p.name}</div>
                     <div class="product-price">$${parseFloat(p.price).toFixed(2)}</div>
@@ -476,9 +532,31 @@ $username = $_SESSION['username'] ?? 'Cashier';
         }
     }
 
+    // Theme Toggle
+    function toggleTheme() {
+        document.body.classList.toggle('light-mode');
+        const isLight = document.body.classList.contains('light-mode');
+        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        updateThemeIcon();
+    }
+    
+    function updateThemeIcon() {
+        const btn = document.getElementById('themeBtn');
+        const isLight = document.body.classList.contains('light-mode');
+        btn.innerHTML = isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    }
+
+    // Load Theme
+    if(localStorage.getItem('theme') === 'light') {
+        document.body.classList.add('light-mode');
+        updateThemeIcon();
+    }
+
     // Init
     loadProducts();
+    initLanguage();
 </script>
-
+<script src="translations.js"></script>
+<script src="animation.js"></script>
 </body>
 </html>

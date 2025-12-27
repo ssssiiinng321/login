@@ -10,6 +10,10 @@
             "destination": "/style.css"
         },
         {
+            "source": "/(.*\\.js)",
+            "destination": "/api/$1"
+        },
+        {
             "source": "/(.*\\.php)",
             "destination": "/api/$1"
         },

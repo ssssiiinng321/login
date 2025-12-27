@@ -1,17 +1,67 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+/* Added for headings */
 
 :root {
-    --bg-color: #111827; /* Very dark blue/grey */
-    --card-bg: #1f2937;
-    --text-primary: #f9fafb;
-    --text-secondary: #9ca3af;
-    --accent: #6366f1; /* Indigo */
-    --accent-hover: #4f46e5;
-    --input-bg: #374151;
-    --input-border: #4b5563;
-    --shape-color-1: #3b82f6; /* Blue */
-    --shape-color-2: #8b5cf6; /* Purple */
-    --shape-color-3: #10b981; /* Green */
+    /* --- Theme Variables (Default: Night Mode) --- */
+    --bg-gradient: linear-gradient(135deg, #0f4c75 0%, #3282b8 100%);
+    --bg-color: #0f4c75;
+
+    --sidebar-bg: rgba(15, 76, 117, 0.7);
+    /* Glassy Blue */
+    --panel-bg: rgba(30, 41, 59, 0.7);
+    /* Dark Glass for Content */
+    --card-bg: rgba(255, 255, 255, 0.05);
+    /* Transparent Card */
+
+    --text-primary: #f8fafc;
+    /* White/Light */
+    --text-secondary: #cbd5e1;
+    /* Light Grey */
+    --text-muted: #94a3b8;
+
+    --input-bg: rgba(0, 0, 0, 0.3);
+    --input-border: rgba(255, 255, 255, 0.1);
+
+    --accent: #3b82f6;
+    /* Blue 500 */
+    --accent-hover: #2563eb;
+
+    --shadow-soft: 0 4px 15px rgba(0, 0, 0, 0.2);
+    --border-color: rgba(255, 255, 255, 0.1);
+
+    /* Shape colors preserved */
+    --shape-color-1: #60a5fa;
+    --shape-color-2: #818cf8;
+    --shape-color-3: #34d399;
+
+    --radius-md: 12px;
+    --radius-lg: 16px;
+}
+
+/* --- Light Mode Overrides --- */
+body.light-mode {
+    --bg-gradient: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    /* Light Grey/White */
+    --bg-color: #f8fafc;
+
+    --sidebar-bg: rgba(255, 255, 255, 0.8);
+    /* Glassy White */
+    --panel-bg: #ffffff;
+    /* White Paper */
+    --card-bg: #ffffff;
+
+    --text-primary: #1e293b;
+    /* Dark Slate */
+    --text-secondary: #475569;
+    /* Grey */
+    --text-muted: #64748b;
+
+    --input-bg: #f1f5f9;
+    --input-border: #e2e8f0;
+
+    --shadow-soft: 0 4px 15px rgba(0, 0, 0, 0.05);
+    --border-color: #e2e8f0;
 }
 
 * {
@@ -22,7 +72,9 @@
 }
 
 body {
-    background-color: var(--bg-color);
+    background: var(--bg-gradient);
+    background-attachment: fixed;
+    /* Fix gradient for scroll */
     color: var(--text-primary);
     min-height: 100vh;
     display: flex;
@@ -31,51 +83,296 @@ body {
     position: relative;
 }
 
-body::before, body::after {
+/* --- Auth Page Specific Styles --- */
+
+body.auth-page {
+    /* Background is now global */
+    display: flex;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #1e293b;
+    /* Dark text for the light background parts */
+    padding: 2rem;
+}
+
+/* Remove default body pseudo-elements on auth page if they interfere */
+body.auth-page::before,
+body.auth-page::after {
+    display: none;
+}
+
+.auth-container-wrapper {
+    width: 900px;
+    max-width: 100%;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    display: flex;
+    overflow: hidden;
+    min-height: 600px;
+    position: relative;
+}
+
+/* Form Side (Left or Right depending on page) */
+.form-side {
+    flex: 1;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #ffffff;
+    z-index: 10;
+    /* Ensure it stays above decorative elements */
+    position: relative;
+}
+
+.form-side.hidden {
+    display: none;
+    /* or use for mobile toggling */
+}
+
+/* Night Sky Side */
+.night-side {
+    flex: 1;
+    background: linear-gradient(135deg, #0f4c75 0%, #3282b8 100%);
+    /* Deep night blue */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    padding: 3rem;
+    overflow: hidden;
+}
+
+#canvas1 {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Clouds and Stars Effect - REDUCED for Canvas compatibility */
+.night-side::before {
+    /* Keep the gradient overlay or static bg if needed, but remove complex animation if it clashes */
     content: '';
     position: absolute;
-    border-radius: 50%;
-    filter: blur(80px); /* creates the glowing orb effect */
-    z-index: -1;
-    opacity: 0.4;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* Simplified background, let canvas do the work */
+    pointer-events: none;
 }
 
-/* Background Gradients/Orbs */
-body::before {
-    width: 300px;
-    height: 300px;
-    background: var(--shape-color-2);
-    top: 20%;
-    left: 10%;
-    animation: float 10s infinite ease-in-out alternate;
+@keyframes twinkle {
+    0% {
+        opacity: 0.4;
+    }
+
+    100% {
+        opacity: 0.8;
+    }
 }
 
-body::after {
-    width: 200px;
-    height: 200px;
-    background: var(--shape-color-1);
-    bottom: 15%;
-    right: 15%;
-    animation: float 8s infinite ease-in-out alternate-reverse;
-}
-
-/* Floating Shapes */
-.shape {
+.cloud-shape {
     position: absolute;
-    filter: blur(2px);
+    width: 200%;
+    height: 100px;
+    background: #ffffff;
+    border-radius: 50%;
+    opacity: 0.1;
+    bottom: -50px;
+    left: -50%;
+    animation: float-cloud 20s infinite linear;
+    pointer-events: none;
+}
+
+@keyframes float-cloud {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(20px);
+    }
+}
+
+/* Typography in Auht */
+.auth-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #1e293b;
+}
+
+.auth-subtitle {
+    font-size: 0.95rem;
+    color: #64748b;
+    margin-bottom: 2rem;
+}
+
+/* Inputs */
+.modern-form-group {
+    margin-bottom: 1.25rem;
+    position: relative;
+}
+
+.modern-input {
+    width: 100%;
+    padding: 0.9rem 1.5rem;
+    padding-left: 3rem;
+    /* Space for icon */
+    border: 2px solid #e2e8f0;
+    border-radius: 50px;
+    /* Pill shape */
+    background: #f8fafc;
+    font-size: 0.95rem;
+    color: #334155;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.modern-input.has-icon {
+    padding-left: 3rem;
+}
+
+.modern-input:focus {
+    border-color: #3b82f6;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.input-icon-left {
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    transition: color 0.3s;
+}
+
+.modern-input:focus+.input-icon-left,
+.modern-input:focus~.input-icon-left {
+    color: #3b82f6;
+}
+
+/* Button */
+.btn-primary-pill {
+    width: 100%;
+    padding: 0.9rem;
+    border-radius: 50px;
+    background: linear-gradient(to right, #3b82f6, #2563eb);
+    color: white;
+    border: none;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 1rem;
+}
+
+.btn-primary-pill:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+}
+
+/* Night Side Content */
+.night-content {
+    position: relative;
+    z-index: 1;
+    /* Above canvas */
+}
+
+.night-content h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.night-content p {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.btn-outline-pill {
+    padding: 0.75rem 2rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50px;
+    background: transparent;
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.btn-outline-pill:hover {
+    background: white;
+    color: #0f4c75;
+}
+
+/* Wave Divider (CSS Art) */
+.wave-divider {
+    position: absolute;
+    width: 150px;
+    background: #fff;
+    z-index: 3;
+    /* This needs complex clip-path or simple absolute positioning overlap */
+}
+
+/* Utilities */
+.text-center {
+    text-align: center;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+}
+
+.text-link {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.text-link:hover {
+    text-decoration: underline;
+}
+
+/* POS Footer */
+.pos-footer {
+    position: absolute;
+    bottom: 2rem;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #94a3b8;
     z-index: 0;
-    opacity: 0.8;
 }
 
-.shape-1 { top: 15%; left: 5%; color: var(--shape-color-1); font-size: 2rem; animation: float 6s infinite ease-in-out; }
-.shape-2 { top: 40%; left: 15%; color: var(--shape-color-2); font-size: 1.5rem; animation: float 7s infinite ease-in-out; }
-.shape-3 { bottom: 30%; left: 10%; color: var(--shape-color-3); font-size: 1rem; animation: float 8s infinite ease-in-out; }
-
-@keyframes float {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-20px); }
+.pos-footer span {
+    font-weight: 600;
+    color: #64748b;
 }
 
+
+/* --- End Auth Styles --- */
+
+/* Dashboard & Global Utilities (Preserving Original Functionality) */
 nav {
     display: flex;
     justify-content: space-between;
@@ -83,6 +380,8 @@ nav {
     padding: 2rem 4rem;
     z-index: 10;
 }
+
+/* Note: Nav might be hidden on Auth pages now, but kept for others */
 
 .logo {
     font-weight: 700;
@@ -92,7 +391,9 @@ nav {
     gap: 0.5rem;
 }
 
-.logo span { color: var(--text-primary); }
+.logo span {
+    color: var(--text-primary);
+}
 
 .nav-links {
     display: flex;
@@ -107,177 +408,335 @@ nav {
     transition: color 0.3s;
 }
 
-.nav-links a:hover { color: var(--text-primary); }
-
-.btn-purchase {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+.nav-links a:hover {
     color: var(--text-primary);
-    text-decoration: none;
-    font-weight: 600;
 }
-
-main {
-    display: flex;
-    flex: 1;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 4rem 4rem 4rem;
-    z-index: 10;
-    position: relative;
-}
-
-.hero-text {
-    max-width: 500px;
-}
-
-.hero-text h1 {
-    font-size: 2.5rem;
-    line-height: 1.2;
-    margin-bottom: 1rem;
-    font-weight: 600;
-}
-
-.quote {
-    color: var(--text-secondary);
-    font-size: 1.1rem;
-    margin-top: 1rem;
-    font-style: italic;
-}
-
-.author {
-    display: block;
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-}
-
-.auth-card {
-    background-color: var(--card-bg);
-    padding: 2.5rem;
-    border-radius: 1rem;
-    width: 400px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.auth-card h2 {
-    font-size: 1.8rem;
-    margin-bottom: 0.5rem;
-}
-
-.auth-subtitle {
-    color: var(--text-secondary);
-    margin-bottom: 2rem;
-    font-size: 0.9rem;
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-    position: relative;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-}
-
-.input-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.input-icon {
-    position: absolute;
-    left: 1rem;
-    color: var(--text-secondary);
-}
-
-.form-input {
-    width: 100%;
-    padding: 0.75rem 1rem 0.75rem 2.8rem;
-    background-color: var(--input-bg);
-    border: 1px solid var(--input-border);
-    border-radius: 0.5rem;
-    color: var(--text-primary);
-    outline: none;
-    transition: border-color 0.3s;
-}
-
-.form-input:focus {
-    border-color: var(--accent);
-}
-
-.toggle-password {
-    position: absolute;
-    right: 1rem;
-    cursor: pointer;
-    color: var(--text-secondary);
-}
-
-.form-footer {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 1.5rem;
-}
-
-.forgot-password {
-    color: var(--text-secondary);
-    font-size: 0.85rem;
-    text-decoration: none;
-}
-.forgot-password:hover { color: var(--text-primary); }
-
-.btn-submit {
-    width: 100%;
-    padding: 0.75rem;
-    background-color: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    font-size: 1rem;
-}
-
-.btn-submit:hover {
-    background-color: var(--accent-hover);
-}
-
-.register-link {
-    display: block;
-    text-align: center;
-    margin-top: 1.5rem;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-}
-
-.register-link a {
-    color: var(--accent);
-    text-decoration: none;
-    font-weight: 500;
-}
-.register-link a:hover { text-decoration: underline; }
 
 /* Responsive */
 @media (max-width: 900px) {
-    main {
+    .auth-container-wrapper {
         flex-direction: column;
-        justify-content: center;
-        gap: 3rem;
-        padding: 2rem;
-    }
-    
-    .hero-text {
-        text-align: center;
+        width: 100%;
+        height: auto;
+        min-height: auto;
+        border-radius: 0;
+        /* Full width on mobile */
     }
 
-    nav {
-        padding: 1.5rem 2rem;
+    .night-side {
+        padding: 2rem;
+        min-height: 200px;
     }
+
+    .form-side {
+        padding: 2rem;
+    }
+
+    body.auth-page {
+        padding: 0;
+        background: #fff;
+    }
+}
+
+/* --- Refined Dashboard Design (Light Theme Overview) --- */
+
+/* Overview Panel Wrapper - mimic the "paper" look */
+.overview-panel {
+    background: var(--panel-bg);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--shadow-soft);
+    font-family: 'Inter', sans-serif;
+    color: var(--text-secondary);
+    /* Text color logic handled by vars usually, but specifically for overview: */
+}
+
+/* Specific overrides for Overview in Default Night Mode vs Light Mode */
+/* Default (Night): We want dark glass, light text */
+/* Light Mode: White background, dark text */
+
+/* Fix specific colors in overview to reuse vars */
+.overview-panel h3,
+.overview-panel .value {
+    color: var(--text-primary);
+}
+
+/* Grid Layout */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 1200px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Stat Cards */
+.stat-card {
+    padding: 2rem 1.5rem;
+    border-radius: var(--radius-lg);
+    /* Slightly sharper corners */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 160px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    border: none;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.stat-card h3 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    opacity: 0.95;
+    letter-spacing: 0.5px;
+}
+
+.stat-card .value {
+    font-size: 2.8rem;
+    font-weight: 400;
+    /* Lighter weight for big numbers */
+    margin-bottom: 0;
+    line-height: 1.1;
+}
+
+/* Exact Reference Colors */
+.bg-green {
+    background-color: #4FC3A1;
+}
+
+/* Teal Green */
+.bg-blue {
+    background-color: #32A0E9;
+}
+
+/* Sky Blue */
+.bg-red {
+    background-color: #FF6B6B;
+}
+
+/* Salmon Red */
+.bg-purple {
+    background-color: #B06EE0;
+}
+
+/* Light Purple */
+
+/* Charts Section */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 2.5fr 1fr;
+    /* Center chart wider */
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 1200px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.chart-card {
+    background: var(--panel-bg);
+    /* White background for chart area */
+    border-radius: var(--radius-lg);
+    padding: 0;
+    /* Remove padding for clean look */
+    /* border: 1px solid #eee; */
+    /* Optional border */
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Summary Card */
+.summary-card {
+    background: var(--panel-bg);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    /* No border radius */
+    box-shadow: none;
+    /* Flat */
+}
+
+.summary-header {
+    background-color: #FFC107;
+    /* Amber Yellow */
+    padding: 0.8rem 1rem;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+}
+
+.summary-list {
+    padding: 1rem 0;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.summary-item span:last-child {
+    color: #333;
+    font-weight: 500;
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-item.total {
+    font-weight: 700;
+    font-size: 1rem;
+    border-top: 1px solid var(--border-color);
+    margin-top: 0.5rem;
+    padding-top: 0.8rem;
+    color: var(--text-primary);
+}
+
+/* Open POS Button CTA */
+.btn-pos-launch {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    text-align: center;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: 50px;
+    /* Pill shape */
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-pos-launch:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+}
+
+.btn-pos-launch:active {
+    transform: translateY(-1px);
+}
+
+.btn-pos-launch i {
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+}
+
+/* Circular Progress generic */
+.circular-chart {
+    display: block;
+    margin: 10px auto;
+    max-width: 80%;
+    max-height: 120px;
+}
+
+.circle-bg {
+    fill: none;
+    stroke: #eee;
+    stroke-width: 3.8;
+}
+
+.circle {
+    fill: none;
+    stroke-width: 3.8;
+    stroke-linecap: round;
+    transition: stroke-dasharray 1.5s ease-out;
+    /* Smooth fill animation */
+}
+
+/* Animation utilities */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stat-card,
+.chart-card,
+.summary-card {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.animate-fade-up {
+    animation: fadeInUp 0.5s ease-out forwards;
+    opacity: 0;
+    /* Hidden initially */
+}
+
+.animate-pop {
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    opacity: 0;
+}
+
+.stat-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.stat-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.stat-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.stat-card:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.percentage {
+    fill: #555;
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 0.6em;
+    text-anchor: middle;
 }

@@ -52,24 +52,45 @@ switch ($method) {
         break;
 
     case 'POST':
-        $data = getJsonInput();
-        if (!isset($data['name'], $data['price'])) {
+        // Handle both JSON (if used elsewhere) and Multipart Form Data
+        $inputData = getJsonInput();
+        
+        // If JSON input failed, fallback to $_POST
+        $name = $inputData['name'] ?? $_POST['name'] ?? null;
+        $price = $inputData['price'] ?? $_POST['price'] ?? null;
+        $desc = $inputData['description'] ?? $_POST['description'] ?? '';
+        $stock = $inputData['stock'] ?? $_POST['stock'] ?? 0;
+        $imageUrl = $inputData['image_url'] ?? $_POST['image_url'] ?? '';
+
+        if (!$name || !$price) {
             http_response_code(400);
             echo json_encode(['error' => 'Missing required fields']);
             exit;
+        }
+
+        // Handle File Upload
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = '../uploads/';
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+            
+            $fileExt = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+            $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            
+            if (in_array($fileExt, $allowed)) {
+                $newFileName = uniqid('prod_', true) . '.' . $fileExt;
+                $destPath = $uploadDir . $newFileName;
+                
+                if (move_uploaded_file($_FILES['image']['tmp_name'], $destPath)) {
+                    $imageUrl = $destPath;
+                }
+            }
         }
         
         $sql = "INSERT INTO products (name, description, price, stock, image_url) VALUES (?, ?, ?, ?, ?)";
         $stmt = $pdo->prepare($sql);
         try {
-            $stmt->execute([
-                $data['name'], 
-                $data['description'] ?? '', 
-                $data['price'], 
-                $data['stock'] ?? 0, 
-                $data['image_url'] ?? ''
-            ]);
-            echo json_encode(['id' => $pdo->lastInsertId(), 'message' => 'Product created']);
+            $stmt->execute([$name, $desc, $price, $stock, $imageUrl]);
+            echo json_encode(['id' => $pdo->lastInsertId(), 'message' => 'Product created', 'image_url' => $imageUrl]);
         } catch (PDOException $e) {
             http_response_code(500);
             echo json_encode(['error' => $e->getMessage()]);

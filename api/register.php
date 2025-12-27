@@ -1,7 +1,7 @@
 <?php
 require 'session.php';
 if (isset($_SESSION['user_id'])) {
-   // header("Location: dashboard.php");
+    // header("Location: dashboard.php");
 }
 ?>
 <!DOCTYPE html>
@@ -9,40 +9,21 @@ if (isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - YourPurpose</title>
+    <title>Sign Up - YourPurpose POS</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
-
-    <div class="shape shape-1">&#x2B22;</div>
-    <div class="shape shape-2"></div>
-    <div class="shape shape-3"></div>
-
-    <nav>
-        <div class="logo">
-            <i class="fas fa-cube"></i> yourpurpose
-        </div>
-        <ul class="nav-links">
-            <li><a href="#">Docs</a></li>
-            <li><a href="#">Changelog</a></li>
-        </ul>
-        <a href="#" class="btn-purchase"><i class="fas fa-shopping-cart"></i> Purchase now</a>
-    </nav>
-
-    <main>
-        <div class="hero-text">
-            <h1>Join our community today.</h1>
-            <p class="quote">"The journey of a thousand miles begins with one step."</p>
-            <span class="author">— Lao Tzu</span>
-        </div>
-
-        <div class="auth-card">
-            <h2>Sign Up</h2>
-            <p class="auth-subtitle">Create your account to get started.</p>
+<body class="auth-page">
+    <canvas id="canvas1"></canvas>
+    
+    <div class="auth-container-wrapper">
+        <!-- Form Side (Left) -->
+        <div class="form-side">
+            <h1 class="auth-title text-center">Create Account</h1>
+            <p class="auth-subtitle text-center">Get started with YourPurpose POS</p>
 
             <?php if(isset($_GET['error'])): ?>
-                <div style="color: #ef4444; margin-bottom: 1rem; font-size: 0.9rem;">
+                <div style="color: #ef4444; margin-bottom: 1rem; text-align: center;">
                     <?php echo htmlspecialchars($_GET['error']); ?>
                 </div>
             <?php endif; ?>
@@ -50,38 +31,40 @@ if (isset($_SESSION['user_id'])) {
             <form action="auth.php" method="POST">
                 <input type="hidden" name="action" value="register">
                 
-                <div class="form-group">
-                    <label>Username</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-user input-icon"></i>
-                        <input type="text" name="username" class="form-input" placeholder="johndoe" required>
-                    </div>
+                <div class="modern-form-group">
+                    <i class="fas fa-user input-icon-left"></i>
+                    <input type="text" name="username" class="modern-input" placeholder="Username" required>
                 </div>
 
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-envelope input-icon"></i>
-                        <input type="email" name="email" class="form-input" placeholder="name@example.com" required>
-                    </div>
+                <div class="modern-form-group">
+                    <i class="fas fa-envelope input-icon-left"></i>
+                    <input type="email" name="email" class="modern-input" placeholder="Email Address" required>
                 </div>
 
-                <div class="form-group">
-                    <label>Password</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-key input-icon"></i>
-                        <input type="password" name="password" class="form-input" placeholder="Create a password" required>
-                    </div>
+                <div class="modern-form-group">
+                    <i class="fas fa-lock input-icon-left"></i>
+                    <input type="password" name="password" class="modern-input" placeholder="Password" required>
                 </div>
 
-                <button type="submit" class="btn-submit">Sign Up ➜</button>
+                <button type="submit" class="btn-primary-pill">SIGN UP</button>
             </form>
+        </div>
 
-            <div class="register-link">
-                Already have an account? <a href="index.php">Sign in</a>
+<!-- Night Side (Right) -->
+        <div class="night-side">
+            <div class="cloud-shape"></div>
+            <div class="night-content">
+                <h2>Already have an account?</h2>
+                <p>Log in to access your dashboard.</p>
+                <a href="index.php" class="btn-outline-pill">Sign in</a>
             </div>
         </div>
-    </main>
+    </div>
 
+    <div class="pos-footer">
+        Powered by <span>YourPurpose POS System</span> &bull; Efficient Sales Management
+    </div>
+
+    <script src="animation.js"></script>
 </body>
 </html>
