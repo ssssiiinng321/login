@@ -51,9 +51,11 @@ switch ($method) {
             $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
             $stmt->execute([$_GET['id']]);
             $product = $stmt->fetch();
-            echo json_encode($product ?: ['error' => 'Product not found']);
+            // Optional: Check if active? Usually specific fetch allows inactive for order details
+             echo json_encode($product ?: ['error' => 'Product not found']);
         } else {
-            $stmt = $pdo->query("SELECT * FROM products ORDER BY created_at DESC");
+            // Only show active products in the list
+            $stmt = $pdo->query("SELECT * FROM products WHERE is_active = 1 ORDER BY created_at DESC");
             echo json_encode($stmt->fetchAll());
         }
         break;
@@ -147,9 +149,10 @@ switch ($method) {
         }
 
         try {
-            $stmt = $pdo->prepare("DELETE FROM products WHERE id = ?");
+            // Soft Delete: Mark as inactive
+            $stmt = $pdo->prepare("UPDATE products SET is_active = 0 WHERE id = ?");
             $stmt->execute([$id]);
-            echo json_encode(['message' => 'Product deleted']);
+            echo json_encode(['message' => 'Product deleted (soft delete)']);
         } catch (PDOException $e) {
             http_response_code(500);
             echo json_encode(['error' => $e->getMessage()]);
